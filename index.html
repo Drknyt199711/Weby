@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Green Book | Bet Tracker</title>
+    <!-- (Unchanged style content omitted for brevity) -->
+</head>
+<body class="dark-mode">
+    <!-- (Unchanged body content omitted for brevity) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let bankroll = parseFloat(localStorage.getItem('bankroll')) || 1000;
+        let bets = JSON.parse(localStorage.getItem('bets')) || [];
+        let profitChart = null;
+
+        const bankrollEl = document.getElementById('bankrollDisplay');
+        const betListEl = document.getElementById('betList');
+        const addBetBtn = document.getElementById('addBetBtn');
+        const depositBtn = document.getElementById('depositBtn');
+        const withdrawBtn = document.getElementById('withdrawBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const themeToggle = document.getElementById('themeToggle');
+        const searchInput = document.getElementById('searchInput');
+        const sportFilter = document.getElementById('sportFilter');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.remove('dark-mode');
+            document.body.classList.add('light-mode');
+        }
+
+        updateUI();
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+
+                if (tab.dataset.tab === 'stats') {
+                    updateUI('chart');
+                }
+            });
+        });
+
+        function saveData() {
+            try {
+                localStorage.setItem('bets', JSON.stringify(bets));
+                localStorage.setItem('bankroll', bankroll);
+            } catch (e) {
+                alert("Storage failed! Export your data before closing.");
+                console.error(e);
+            }
+        }
+
+        function updateUI(updateType = 'all') {
+            if (updateType === 'all' || updateType === 'bankroll') {
+                bankrollEl.textContent =  bankroll.toFixed(2) + ' ETB';
+            }
+            if (updateType === 'all' || updateType === 'bets') {
+                renderBetList();
+                updateStats();
+                updateSportFilter();
+            }
+            if (updateType === 'all' || updateType === 'chart') {
+                renderProfitChart();
+            }
+        }
+
+        function renderBetList() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const sport = sportFilter.value;
+
+            const filteredBets = bets.filter(bet => {
+                const matchesSearch = 
+                    bet.sport.toLowerCase().includes(searchTerm) || 
+                    bet.event.toLowerCase().includes(searchTerm);
+                const matchesSport = sport === 'all' || bet.sport === sport;
+                return matchesSearch && matchesSport;
+            });
+
+            betListEl.innerHTML = '';
+
+            filteredBets.forEach(bet => {
+                const row = document.createElement('tr');
+
+                ['date', 'sport', 'event', 'stake', 'odds', 'outcome'].forEach(field => {
+                    const cell = document.createElement('td');
+                    cell.textContent = bet[field];
+                    row.appendChild(cell);
+                });
+
+                const profitCell = document.createElement('td');
+                const profit = (bet.outcome === 'win') ? (bet.stake * bet.odds - bet.stake)
+                              : (bet.outcome === 'loss') ? -bet.stake : 0;
+                profitCell.textContent = profit.toFixed(2) + ' ETB';
+                profitCell.className = profit > 0 ? 'win' : profit < 0 ? 'loss' : '';
+                row.appendChild(profitCell);
+
+                const deleteCell = document.createElement('td');
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = '🗑';
+                deleteBtn.style.background = 'none';
+                deleteBtn.style.border = 'none';
+                deleteBtn.style.cursor = 'pointer';
+                deleteBtn.title = 'Delete this bet';
+                deleteBtn.addEventListener('click', () => {
+                    if (confirm("Delete this bet?")) {
+                        const index = bets.findIndex(b => b.date === bet.date);
+                        if (index > -1) {
+                            bets.splice(index, 1);
+                            saveData();
+                            updateUI('bets');
+                        }
+                    }
+                });
+                deleteCell.appendChild(deleteBtn);
+                row.appendChild(deleteCell);
+
+                betListEl.appendChild(row);
+            });
+        }
+
+        // (Other functions remain unchanged...)
+
+        // Service Worker registration
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(() => console.log("Service Worker registered successfully."))
+                .catch(err => console.error("Service Worker registration failed:", err));
+        }
+    </script>
+</body>
+</html>
