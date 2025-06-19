@@ -5,8 +5,8 @@ const urlsToCache = [
     '/style.css',
     '/script.js',
     '/manifest.json',
-    '/images/icon-192x192.png',
-    '/images/icon-512x512.png'
+    '/icon-192x192.png',
+    '/icon-512x512.png'
 ];
 
 // Install event: Caches all assets specified in urlsToCache
