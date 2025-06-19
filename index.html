@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#317EFB"/>
-    <link rel="apple-touch-icon" href="icon-192x192.png">
+    <link rel="apple-touch-icon" href="images/icon-192x192.png">
 </head>
 <body>
     <div class="container">
@@ -29,12 +29,12 @@
 
     <script src="script.js"></script>
     <script>
-        // Register service worker
+        // Register Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
                     .then(registration => {
-                        console.log('Service Worker registered:', registration);
+                        console.log('Service Worker registered with scope:', registration.scope);
                     })
                     .catch(error => {
                         console.error('Service Worker registration failed:', error);
