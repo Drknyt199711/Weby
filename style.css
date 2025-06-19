@@ -1,54 +1,64 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #f0f0f0;
+    background-color: #e0f2f7; /* Light blue background */
     margin: 0;
+    color: #333;
+    line-height: 1.6;
 }
 
 .container {
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
     text-align: center;
+    max-width: 400px;
+    width: 90%;
 }
 
 h1 {
-    color: #333;
-    margin-bottom: 20px;
+    color: #2c3e50; /* Darker blue-grey */
+    margin-bottom: 25px;
+    font-size: 2.5em;
+    letter-spacing: 1px;
 }
 
 .game-board {
     display: grid;
-    grid-template-columns: repeat(3, 100px);
-    grid-template-rows: repeat(3, 100px);
-    gap: 5px;
-    margin: 20px auto;
-    width: 315px; /* 3*100px + 2*5px */
-    border: 2px solid #333;
+    grid-template-columns: repeat(3, 1fr); /* Responsive columns */
+    grid-template-rows: repeat(3, 1fr);
+    gap: 8px;
+    margin: 30px auto;
+    width: 300px; /* Fixed width for the board */
+    height: 300px; /* Fixed height for the board */
+    border: 3px solid #3498db; /* Blue border */
+    border-radius: 8px;
+    overflow: hidden; /* Ensures cells within bounds */
 }
 
 .cell {
-    width: 100px;
-    height: 100px;
-    background-color: #eee;
+    background-color: #ecf0f1; /* Light grey cell background */
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 3em;
+    font-size: 3.5em; /* Larger font for X/O */
     font-weight: bold;
     cursor: pointer;
-    border: 1px solid #ccc;
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    border: 1px solid #bdc3c7; /* Lighter grey cell border */
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    user-select: none; /* Prevent text selection on cells */
 }
 
 .cell:hover {
-    background-color: #ddd;
+    background-color: #dbe2e6; /* Slightly darker on hover */
+    transform: scale(1.02); /* Slight scale up on hover */
 }
 
+/* Player X and O styling */
 .cell.x {
     color: #e74c3c; /* Red for X */
 }
@@ -58,23 +68,55 @@ h1 {
 }
 
 #status-message {
-    margin-top: 20px;
-    font-size: 1.2em;
-    color: #555;
+    margin-top: 25px;
+    font-size: 1.4em;
+    color: #2c3e50;
+    font-weight: 500;
 }
 
 #reset-button {
-    background-color: #28a745;
+    background-color: #27ae60; /* Green for reset */
     color: white;
     border: none;
-    padding: 10px 20px;
-    font-size: 1em;
-    border-radius: 5px;
+    padding: 12px 25px;
+    font-size: 1.1em;
+    border-radius: 8px;
     cursor: pointer;
-    margin-top: 20px;
-    transition: background-color 0.3s ease;
+    margin-top: 30px;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 #reset-button:hover {
-    background-color: #218838;
+    background-color: #219d55; /* Darker green on hover */
+    transform: translateY(-2px); /* Slight lift on hover */
+}
+
+#reset-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .container {
+        padding: 25px;
+    }
+    h1 {
+        font-size: 2em;
+    }
+    .game-board {
+        width: 270px;
+        height: 270px;
+    }
+    .cell {
+        font-size: 3em;
+    }
+    #status-message {
+        font-size: 1.1em;
+    }
+    #reset-button {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
 }
